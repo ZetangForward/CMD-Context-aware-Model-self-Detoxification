@@ -69,8 +69,8 @@ def train():
 
     # tokenizer.padding_side = "right"  ## Allow batched inference
     max_seq_length = {
-        "max_enc_length": 400,   #512
-        "max_dec_length": 400,   #512
+        "max_enc_length": 512,   
+        "max_dec_length": 512,   
     }
     
     tokenizer_args = {

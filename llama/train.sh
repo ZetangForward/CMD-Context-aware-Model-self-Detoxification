@@ -1,13 +1,8 @@
-export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
-FILE_PATH=<your-dataset-path>
-SAVED_PATH=<your-save-path>
-
-
-python -m torch.distributed.launch --nproc_per_node 8 --master_port='29501' fastchat.py \
-    --model_name_or_path <your-model-path> \
-    --data_path $FILE_PATH \
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python -m torch.distributed.launch --nproc_per_node 8 --master_port='29501' fastchat.py \
+    --model_name_or_path {your-base-model-path} \
+    --data_path {your-dataset-path} \
     --bf16 True \
-    --output_dir $SAVED_PATH \
+    --output_dir {your-adapter/lora-save-path} \
     --num_train_epochs 5 \
     --per_device_train_batch_size 24 \
     --gradient_accumulation_steps 5 \
