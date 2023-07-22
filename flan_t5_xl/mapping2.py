@@ -103,7 +103,7 @@ def get_peft_model(model, peft_config):
             return PeftModel(model, peft_config)
     if not isinstance(peft_config, PromptLearningConfig):
         if peft_config.peft_type == "BOTTLENECK":
-            # import pdb;pdb.set_trace()
+            
             peft_config = _prepare_bottleneck_config(peft_config, model_config)           
         elif peft_config.peft_type == "LORA":
             peft_config = _prepare_lora_config(peft_config, model_config)
@@ -240,7 +240,7 @@ class PromptLearningConfig(PeftConfig):
     num_layers: Optional[int] = field(default=None, metadata={"help": "Number of transformer layers"})
 
 def _prepare_bottleneck_config(peft_config, model_config):
-    # import pdb;pdb.set_trace()
+    
     if peft_config.target_modules is None:
         if peft_config.use_parallel_adapter:
             if model_config["model_type"] not in TRANSFORMERS_MODELS_TO_PARALLEL_TARGET_MODULES_MAPPING:

@@ -152,7 +152,7 @@ class BottleneckModel(torch.nn.Module):
                 if self.peft_config.use_parallel_adapter:
                     adapter_type = "parallel_adapter"
                 else:
-                    # import pdb;pdb.set_trace()
+                    
                     if type(parent) == transformers.models.gpt2.modeling_gpt2.GPT2Attention and target_name == 'c_proj':
                         adapter_type = 'output_adapter'
                     if type(parent) == transformers.models.gpt2.modeling_gpt2.GPT2MLP and target_name == 'c_proj':
@@ -161,7 +161,7 @@ class BottleneckModel(torch.nn.Module):
                 kwargs.update({"adapter_type": adapter_type})
                     
                 bias = target.bias is not None
-                # import pdb;pdb.set_trace()
+                
                 if loaded_in_8bit and isinstance(target, bnb.nn.Linear8bitLt):
                     kwargs.update(
                         {
@@ -205,7 +205,7 @@ class BottleneckModel(torch.nn.Module):
         return parent, target, target_name
 
     def _replace_module(self, parent_module, child_name, new_module, old_module):
-        # import pdb;pdb.set_trace()
+        
         setattr(parent_module, child_name, new_module)
         new_module.weight = old_module.weight
         if old_module.bias is not None:
@@ -390,9 +390,9 @@ class Linear(nn.Linear, AdapterLayer):
                 output = self.adapter_up(self.act_fn(self.adapter_down(self.adapter_dropout(x)))).to(expected_dtype) * self.adapter_scaling
 
                 output = output + residual
-                # import pdb;pdb.set_trace()
+                
                 # result = F.linear(output, self.weight, bias=self.bias)
-                # import pdb;pdb.set_trace()
+                
                 self.Conv1d_mlp.weight = self.weight
                 result = self.Conv1d_mlp(output)
             elif self.adapter_type == "output_adapter":

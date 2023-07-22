@@ -31,7 +31,7 @@ class BaseData(Dataset):
         instruction = sample.get("instruction", "")
         input_ = sample.get("input", "")
         output = sample.get("output", "")
-        # import pdb;pdb.set_trace()
+        
         # create input text
         if len(input_) != 0:
             sample_ipt = LLAMA_TEMPLATE_V1["prompt_input"].format(instruction=instruction, input=input_)
@@ -56,7 +56,7 @@ class BaseData(Dataset):
         #     "labels": label_terms['input_ids'],
         #     # "attention_mask": label_terms["attention_mask"]
         # }
-        # import pdb;pdb.set_trace()
+        
         return {
                 "input_ids": label_terms['input_ids'],
                 "attention_mask": label_terms["attention_mask"],

@@ -239,7 +239,7 @@ class PromptLearningConfig(PeftConfig):
     num_layers: Optional[int] = field(default=None, metadata={"help": "Number of transformer layers"})
 
 def _prepare_bottleneck_config(peft_config, model_config):
-    # import pdb;pdb.set_trace()
+    
     if peft_config.target_modules is None:
         if peft_config.use_parallel_adapter:
             if model_config["model_type"] not in TRANSFORMERS_MODELS_TO_PARALLEL_TARGET_MODULES_MAPPING:

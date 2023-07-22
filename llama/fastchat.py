@@ -10,12 +10,6 @@ import transformers
 from transformers import LlamaTokenizer, LlamaForCausalLM
 from transformers import Trainer
 from basedataset import BaseData
-# from peft import (
-#     LoraConfig,
-#     get_peft_model_state_dict,
-#     prepare_model_for_int8_training,
-#     set_peft_model_state_dict,
-# )
 
 from bottleneck_re import BottleneckConfig
 from mapping2 import get_peft_model
@@ -121,7 +115,7 @@ def train():
     
     model = get_peft_model(model, config)
     model.print_trainable_parameters()
-    # import pdb;pdb.set_trace()
+    
     dataset = BaseData(args.data_paths[0], tokenizer, tokenizer_args, max_seq_length, "train")
     
     # dataloader = DataLoader(dataset, batch_size=4, shuffle=True, collate_fn=dataset.collect_fn)

@@ -53,14 +53,14 @@ class BaseData(Dataset):
         
         # new_label = torch.where(label_mask == 1, label_terms["input_ids"], -100)
         new_label = torch.where(label_terms["attention_mask"]==1,label_terms["input_ids"], -100)
-        # import pdb;pdb.set_trace()
+        
         # return {
         #     "input_ids": input_terms['input_ids'],
         #     "attention_mask": input_terms["attention_mask"],
         #     "labels": label_terms['input_ids'],
         #     # "attention_mask": label_terms["attention_mask"]
         # }
-        # import pdb;pdb.set_trace()
+        
         return {
                 "input_ids": input_terms['input_ids'],
                 "attention_mask": input_terms["attention_mask"],
