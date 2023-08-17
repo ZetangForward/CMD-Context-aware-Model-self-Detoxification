@@ -41,8 +41,8 @@ sh ./inference.sh
 We provide the download link for all the origin data used in our paper:
 | Dataset | Samples | Download Link | 
 |---------|---------|---------|
-| <center>Real Toxicity Prompts</center> | <center>~10k</center> |<center>[download](https://github.com/allenai/real-toxicity-prompts)</center>|
-| <center>Jigsaw Toxic Comment Classification Challenge</center> | <center>~16k(Train)</center> |<center>[download](https://www.kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge/data)</center>|
+| <center>Real Toxicity Prompts</center> | <center>~100k</center> |<center>[download](https://github.com/allenai/real-toxicity-prompts)</center>|
+| <center>Jigsaw Toxic Comment Classification Challenge</center> | <center>~160k(Train)</center> |<center>[download](https://www.kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge/data)</center>|
 
 Our chain-of-thought datasets for all models are coming soon.
 
