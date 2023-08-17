@@ -1,5 +1,5 @@
 # Detox-CoT
-This is the official code for paper "Rome Was Not Built in A Day: Let’s Detoxify Step by Step"
+This is the official code for paper ["Rome Was Not Built in A Day: Let’s Detoxify Step by Step"](https://arxiv.org/abs/2308.08295)
 
 # Overview
 <p align="center"><img src="./assets/detox_chain.png" alt="Logo"></p>
