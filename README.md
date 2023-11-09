@@ -18,7 +18,7 @@ conda env create -f environment.yaml
 
 ## Detox-Chain
 ### Preprocess
-Here we will create the span dataset for training of Span-CNN.
+Here we will create the span dataset for training Span-CNN.
 ```
 cd span_cnn
 
@@ -144,7 +144,7 @@ python ./utils/evaluate_toxicity.py --file ./result/corresponding_model/test_was
 ```
 
 # Data Release
-We provide the download link for all the origin data used in our paper:
+We provide the download link for all the original data used in our paper:
 | Dataset | Samples | Download Link | 
 |---------|---------|---------|
 | <center>Real Toxicity Prompts</center> | <center>~100k</center> |<center>[download](https://github.com/allenai/real-toxicity-prompts)</center>|
