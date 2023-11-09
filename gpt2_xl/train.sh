@@ -1,8 +1,8 @@
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python  -m torch.distributed.launch --nproc_per_node 8 --master_port='29501' fastchat.py \
-    --model_name_or_path {your-model-path} \
-    --data_path {your-dataset-path} \
+    --model_name_or_path gpt2-xl \
+    --data_path ../dataset/gpt2-xl/rtp_detox_chain.json \
     --bf16 True \
-    --output_dir {your-save-path} \
+    --output_dir ../ckp/gpt2-xl/adapter \
     --num_train_epochs 5 \
     --per_device_train_batch_size 4 \
     --gradient_accumulation_steps 16 \
