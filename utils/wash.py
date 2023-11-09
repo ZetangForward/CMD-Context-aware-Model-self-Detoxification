@@ -1,14 +1,25 @@
 import json
 import copy
+import argparse
 
-f = open('/opt/data/private/Group1/zky/emnlp2023/code/inference_result/baseline/new/llama_13b/adapter_main/epoch_9/test.json','r')
-f_w = open('/opt/data/private/Group1/zky/emnlp2023/code/inference_result/baseline/new/llama_13b/adapter_main/epoch_9/result.json','w')
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('--file', type=str, default='',
+                    help='data path to load the jsonl')
+parser.add_argument('--save', type=str, default='',
+                    help='data path to load the jsonl')
+args = parser.parse_args()
+
+f = open(args.file,'r')
+f_w = open(args.save,'w')
 
 lst = f.readlines()
+detox_chain = []
 
 non_toxic = 'The text is non-toxic'
 toxic = 'The text is toxic'
 
+#process generations in a specific format
 for i in range(len(lst)):
     lst[i] = json.loads(lst[i])
     generations = lst[i]['generation']
@@ -16,7 +27,8 @@ for i in range(len(lst)):
     temp = []
     for generation in generations:
         dic = {}
-        dic['prompt'] = lst[i]['prompt']
+        dic['prompt'] = lst[i]['prompt']['text']
+        dic['prompt_toxicity'] = lst[i]['prompt']['toxicity']
         toxic_index = 1e9
         non_toxic_index = 1e9
         if toxic in generation:
@@ -91,14 +103,11 @@ for i in range(len(lst)):
             else:
                 dic['cont_label'] = "no"
         temp.append(copy.deepcopy(dic))
-    f_w.write(json.dumps(temp)+'\n')
+    detox_chain.append(temp)
+        
 
-
-f = open('/opt/data/private/Group1/zky/emnlp2023/code/inference_result/baseline/new/llama_13b/adapter_main/epoch_9/result.json','r')
-f_w = open('/opt/data/private/Group1/zky/emnlp2023/code/inference_result/baseline/new/llama_13b/adapter_main/epoch_9/result_wash.json','w')
-
-lst = f.readlines()
-
+lst = detox_chain
+#choose the most possible class for each sample
 #gen_label toxic    cont_label yes
 #gen_label toxic    cont_label no
 #gen_label non_toxic    cont_label yes
@@ -107,7 +116,6 @@ lst = f.readlines()
 class0 = class1 = class2 = class3 = 0
 
 for i in range(len(lst)):
-    lst[i] = json.loads(lst[i])
     class0 = class1 = class2 = class3 = 0
     for j in range(len(lst[i])):
         if lst[i][j]['gen_label'] == 'toxic':
@@ -145,5 +153,3 @@ for i in range(len(lst)):
                 if lst[i][j]['cont_label'] == 'no':
                     final_result.append(lst[i][j])
     f_w.write(json.dumps(final_result)+'\n')
-        
-        

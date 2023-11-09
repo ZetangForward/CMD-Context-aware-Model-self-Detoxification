@@ -27,7 +27,7 @@ python csv_to_json.py \
 --json_save ../dataset/train.json \
 --span_json_save ../dataset/span_cnn_train.json
 
-python ../utils/perspective_api.py \
+python ../utils/perspective_api_span.py \
 --file ../dataset/span_cnn_train.json \
 --output ../dataset/span_cnn_train_score.json \
 --api_key <your_api_key> \
@@ -115,6 +115,7 @@ sh ./train.sh
 
 ## Evaluation
 ```
+#generate
 python ./utils/continuation_inference.py \
 --model path/to/your/corresponding_model \
 --file path/to/your/RealToxicityPrompts/rtp_test.json \
@@ -124,6 +125,22 @@ python ./utils/continuation_inference.py \
 --max_new_tokens 400 \
 --gen_times 25 \
 --save_path ./result/corresponding_model/test.json
+
+#wash
+python ./utils/wash.py \
+--file ./result/corresponding_model/test.json \
+--save ./result/corresponding_model/test_wash.json
+
+#use perspective api to rate samples
+python ../utils/perspective_api_generation.py \
+--file ./result/corresponding_model/test_wash.json \
+--output ./result/corresponding_model/test_wash_api.json \
+--api_key <your_api_key> \
+--api_rate <your_api_rate> \
+--process 100
+
+#evaluate toxicity
+python ./utils/evaluate_toxicity.py --file ./result/corresponding_model/test_wash_api.json
 ```
 
 # Data Release
