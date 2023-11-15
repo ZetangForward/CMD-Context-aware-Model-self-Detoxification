@@ -25,7 +25,7 @@ cd utils
 python csv_to_json.py \
 --input path/to/your/jigsaw/train.csv \
 --json_save ../dataset/total.json \
---train_span_json_save ../dataset/span_cnn_train.json
+--train_span_json_save ../dataset/span_cnn_train.json \
 --test_span_json_save ../dataset/span_cnn_test.json
 
 sh perspective_api.sh
