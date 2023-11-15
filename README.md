@@ -20,27 +20,26 @@ conda env create -f environment.yaml
 ### Preprocess
 Here we will create the span dataset for training Span-CNN.
 ```
-cd span_cnn
+cd utils
 
 python csv_to_json.py \
 --input path/to/your/jigsaw/train.csv \
---json_save ../dataset/train.json \
---span_json_save ../dataset/span_cnn_train.json
+--json_save ../dataset/total.json \
+--train_span_json_save ../dataset/span_cnn_train.json
+--test_span_json_save ../dataset/span_cnn_test.json
 
-python ../utils/perspective_api_span.py \
---file ../dataset/span_cnn_train.json \
---output ../dataset/span_cnn_train_score.json \
---api_key <your_api_key> \
---api_rate <your_api_rate> \
---process 100
+sh perspective_api.sh
 ```
 
 
 ### Train Span-CNN
 ```
+cd ../span_cnn
+
 python -u run_glue_no_trainer.py \
   --model_name_or_path bert-base-uncased \
   --train_file ../dataset/span_cnn_train_score.json \
+  --validation_file ../dataset/span_cnn_test_score.json \
   --max_length 128 \
   --per_device_train_batch_size 256 \
   --per_device_eval_batch_size 256 \
@@ -53,7 +52,9 @@ python -u run_glue_no_trainer.py \
 ### Mask toxic span
 Note that the original RealToxicityPrompts dataset isn't divided into training and testing sets, we divide prompts.jsonl of RealToxicityPrompts dataset into rtp_train.json and rtp_test.json.
 ```
-python ../utils/mask_toxic_span.py \
+cd utils
+
+python mask_toxic_span.py \
 --input path/to/your/RealToxicityPrompts/rtp_train.json \
 --output ../dataset/rtp_mask_span.json \
 --model_path ../ckp/span_cnn
@@ -62,7 +63,7 @@ Remember to use perspective api to make sure all masked prompts in rtp_mask_span
 
 ### Rephrase masked prompts
 ```
-python ../utils/rephrase.py \
+python rephrase.py \
 --file ../dataset/rtp_mask_span.json \
 --save ../dataset/rtp_rephrase.json
 ```
@@ -71,7 +72,7 @@ Remember to use perspective api to make sure all rephrased prompts in rtp_rephra
 ### Continual generation
 
 ```
-python ../utils/continuation_inference.py \
+python continuation_inference.py \
 --model path/to/your/corresponding_model \
 --file ../dataset/rtp_rephrase.json
 --bsz 8 \
@@ -80,7 +81,7 @@ python ../utils/continuation_inference.py \
 --save_path ../dataset/corresponding_model/rtp_continuation.json
 
 #evaluate similarity between prompts and generations to judge whether to continue to generate
-python ../utils/eval_sim.py \
+python eval_sim.py \
 --file ../dataset/corresponding_model/rtp_continuation.json \
 --save ../dataset/corresponding_model/rtp_sim.json
 ```

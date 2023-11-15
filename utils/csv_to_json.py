@@ -10,7 +10,8 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--input", type=str)
 parser.add_argument("--json_save", type=str)
-parser.add_argument("--span_json_save", type=str)
+parser.add_argument("--train_span_json_save", type=str)
+parser.add_argument("--test_span_json_save", type=str)
 parser.add_argument("--toxic_sample_num", type=str,default=9900)
 parser.add_argument("--non_toxic_sample_num", type=str,default=1100)
 args = parser.parse_args()
@@ -18,7 +19,8 @@ args = parser.parse_args()
 # Paths to the input CSV file and the output JSON file
 input_csv_path = args.input
 output_json_path = args.json_save
-output_span_json_path = args.span_json_save
+output_train_span_json_path = args.train_span_json_save
+output_test_span_json_path = args.test_span_json_save
 
 
 def convert_csv_to_json(csv_file_path, json_file_path):
@@ -67,23 +69,39 @@ def process_comment(comment_data):
         'toxic': int(comment_data['toxic'])  
     }
 
+def split_list(lst, test_num):
+    random.shuffle(lst)
+    return lst[:test_num], lst[test_num:]
+
+
 # Load the comments_toxicity.json
 with open(output_json_path, 'r') as file:
     lst = file.readlines()
     toxic = []
     non_toxic = []
     for i in range(len(lst)):
-        if lst[i]['toxic'] == '0':
+        lst[i] = json.loads(lst[i])
+        if lst[i]['toxic'] == 0:
             non_toxic.append(lst[i])
-        elif lst[i]['toxic'] == '1':
+        elif lst[i]['toxic'] == 1:
             toxic.append(lst[i])
-    comments_data = random.sample(toxic,args.toxic_sample_num) + random.sample(non_toxic,args.non_toxic_sample_num)
+    toxic_total = random.sample(toxic,args.toxic_sample_num)
+    non_toxic_total = random.sample(non_toxic,args.non_toxic_sample_num)
+    test_toxic,train_toxic = split_list(toxic_total, 900)
+    test_non_toxic,train_non_toxic = split_list(non_toxic_total, 100)
+    train_comments_data = train_toxic + train_non_toxic
+    test_comments_data = test_toxic + test_non_toxic
     
 
 # Process each comment and store the results
-train_span_data = [process_comment(comment) for comment in tqdm(comments_data,total=len(comments_data))]
+train_span_data = [process_comment(comment) for comment in tqdm(train_comments_data,total=len(train_comments_data))]
+test_span_data = [process_comment(comment) for comment in tqdm(test_comments_data,total=len(test_comments_data))]
 
 # Save the processed data to train_span.json
-with open(output_span_json_path, 'w') as outfile:
+with open(output_train_span_json_path, 'w') as outfile:
     for i in range(len(train_span_data)):
         outfile.write(json.dumps(train_span_data[i])+'\n')
+
+with open(output_test_span_json_path, 'w') as outfile:
+    for i in range(len(test_span_data)):
+        outfile.write(json.dumps(test_span_data[i])+'\n')
