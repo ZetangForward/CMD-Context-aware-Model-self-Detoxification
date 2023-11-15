@@ -150,7 +150,7 @@ We provide the download link for all the original data used in our paper:
 |---------|---------|---------|
 | <center>Real Toxicity Prompts</center> | <center>~100k</center> |<center>[download](https://github.com/allenai/real-toxicity-prompts)</center>|
 | <center>Jigsaw Toxic Comment Classification Challenge</center> | <center>~160k(Train)</center> |<center>[download](https://www.kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge/data)</center>|
-| <center>Writing Prompts</center> | <center>~300K(Train)</center> |<center>[download](https://www.kaggle.com/datasets/ratthachat/writing-prompts)</center>|
+| <center>Writing Prompts</center> | <center>~300K</center> |<center>[download](https://www.kaggle.com/datasets/ratthachat/writing-prompts)</center>|
 
 
 # Model Release
