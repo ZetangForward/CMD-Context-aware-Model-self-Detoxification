@@ -140,7 +140,7 @@ python ../utils/perspective_api_generation.py \
 --api_rate <your_api_rate> \
 --process 100
 
-#evaluate toxicity
+#show toxicity
 python ./utils/toxicity_analysis.py --file ./result/corresponding_model/test_wash_api.json
 ```
 
