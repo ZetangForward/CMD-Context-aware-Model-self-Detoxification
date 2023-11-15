@@ -141,7 +141,7 @@ python ../utils/perspective_api_generation.py \
 --process 100
 
 #evaluate toxicity
-python ./utils/evaluate_toxicity.py --file ./result/corresponding_model/test_wash_api.json
+python ./utils/toxicity_analysis.py --file ./result/corresponding_model/test_wash_api.json
 ```
 
 # Data Release
@@ -150,8 +150,8 @@ We provide the download link for all the original data used in our paper:
 |---------|---------|---------|
 | <center>Real Toxicity Prompts</center> | <center>~100k</center> |<center>[download](https://github.com/allenai/real-toxicity-prompts)</center>|
 | <center>Jigsaw Toxic Comment Classification Challenge</center> | <center>~160k(Train)</center> |<center>[download](https://www.kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge/data)</center>|
+| <center>Writing Prompts</center> | <center>~300K(Train)</center> |<center>[download](https://www.kaggle.com/datasets/ratthachat/writing-prompts)</center>|
 
-Our Detox-Chain datasets for all models are coming soon.
 
 # Model Release
 Coming Soon
