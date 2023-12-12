@@ -1,20 +1,29 @@
 # Detox-CoT
 This is the official code for paper ["Detoxify Language Model Step-by-Step"](https://arxiv.org/abs/2308.08295)
 
-# Overview
+## Overview
 <p align="center"><img src="./assets/detox_chain.png" alt="Logo"></p>
 
-# Highlights
+## Highlights
 * We decompose the detoxification process into ordered sub-steps to construct Detox-chain.
 * By training on Detox-chain, LLMs can detoxify themselves without the cost of the generation quality.
 
 # Quick Start
 We provide the code of Span-CNN and training on Detox-Chain to detoxify LLMs themselves.
 
-## Requirements
+## Environment
 ```
 conda env create -f environment.yaml
 ```
+
+## Dataset
+```
+cd dataset/
+cp kaggle.json ~/.kaggle/kaggle.json
+chmod 600 ~/.kaggle/kaggle.json
+
+```
+
 
 ## Detox-Chain
 ### Preprocess
