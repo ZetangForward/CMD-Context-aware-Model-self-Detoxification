@@ -90,7 +90,7 @@ def train():
     
     # lora  hyperparams
     if 'lora' in args.output_dir:
-        from peft import get_peft_model,LoraConfig
+        from peft import get_peft_model, LoraConfig
         config = LoraConfig(
             r=8,
             lora_alpha=16,
