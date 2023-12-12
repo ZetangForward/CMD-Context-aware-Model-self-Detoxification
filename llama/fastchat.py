@@ -14,6 +14,7 @@ from basedataset import BaseData
 from bottleneck_re import BottleneckConfig
 from mapping2 import get_peft_model
 from typing import List
+from peft import get_peft_model, LoraConfig
 import logging
 from peft_model import PeftModelForCausalLM
 logging.basicConfig(level=logging.INFO)
@@ -89,29 +90,29 @@ def train():
     )
     
     # lora  hyperparams
-    if 'lora' in args.output_dir:
-        from peft import get_peft_model, LoraConfig
-        config = LoraConfig(
-            r=8,
-            lora_alpha=16,
-            target_modules=["q_proj","v_proj"],
-            lora_dropout=0.05,
-            bias="none",
-            task_type="CAUSAL_LM",
-        )
-    else:
-    # bottleneck hyperparams
-        config = BottleneckConfig(
-                bottleneck_size=256,
-                non_linearity='tanh',
-                adapter_dropout=0.0,
-                use_parallel_adapter=False,
-                use_adapterp=False,
-                target_modules=None,
-                scaling=1.0,
-                bias="none",
-                task_type="CAUSAL_LM",
-            )
+    # if 'lora' in args.output_dir:
+        
+    config = LoraConfig(
+        r=8,
+        lora_alpha=16,
+        target_modules=["q_proj","v_proj"],
+        lora_dropout=0.05,
+        bias="none",
+        task_type="CAUSAL_LM",
+    )
+    # else:
+    # # bottleneck hyperparams
+    #     config = BottleneckConfig(
+    #             bottleneck_size=256,
+    #             non_linearity='tanh',
+    #             adapter_dropout=0.0,
+    #             use_parallel_adapter=False,
+    #             use_adapterp=False,
+    #             target_modules=None,
+    #             scaling=1.0,
+    #             bias="none",
+    #             task_type="CAUSAL_LM",
+    #         )
     
     model = get_peft_model(model, config)
     model.print_trainable_parameters()

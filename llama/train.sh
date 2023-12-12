@@ -1,11 +1,10 @@
-CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python -m torch.distributed.launch --nproc_per_node 8 --master_port='29501' fastchat.py \
-    --model_name_or_path llama-7b-hf \
-    --data_path ../dataset/llama-7b-hf/rtp_detox_chain.json \
-    --bf16 True \
-    --output_dir ../ckp/llama-7b-hf/adapter \
-    --num_train_epochs 5 \
-    --per_device_train_batch_size 24 \
-    --gradient_accumulation_steps 5 \
+python fastchat.py \
+    --model_name_or_path /zecheng/model_hub/Llama-2-7b-hf \
+    --data_path /workspace/zecheng/Detox-CoT/dataset/download/Detox-Chain/llama_7b.json \
+    --output_dir /zecheng/detox-cot/llama2 \
+    --num_train_epochs 8 \
+    --per_device_train_batch_size 38 \
+    --gradient_accumulation_steps 2 \
     --evaluation_strategy "no" \
     --save_strategy "epoch" \
     --learning_rate 5e-4 \
@@ -13,6 +12,5 @@ CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python -m torch.distributed.launch --nproc_
     --warmup_ratio 0.03 \
     --lr_scheduler_type "cosine" \
     --logging_steps 10 \
-    --tf32 False \
     --load_in_8bit False
 
