@@ -1,0 +1,3 @@
+[submodule "modelzipper"]
+	path = modelzipper
+	url = https://github.com/ZetangForward/modelzipper.git
