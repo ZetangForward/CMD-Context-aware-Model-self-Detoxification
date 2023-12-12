@@ -1,22 +1,28 @@
 # Detox-CoT
-This is the official code for paper ["Detoxify Language Model Step-by-Step"](https://arxiv.org/abs/2308.08295)
+
+This is the official code for paper [&#34;Detoxify Language Model Step-by-Step&#34;](https://arxiv.org/abs/2308.08295)
 
 ## Overview
+
 <p align="center"><img src="./assets/detox_chain.png" alt="Logo"></p>
 
 ## Highlights
+
 * We decompose the detoxification process into ordered sub-steps to construct Detox-chain.
 * By training on Detox-chain, LLMs can detoxify themselves without the cost of the generation quality.
 
 # Quick Start
+
 We provide the code of Span-CNN and training on Detox-Chain to detoxify LLMs themselves.
 
 ## Environment
+
 ```
 conda env create -f environment.yaml
 ```
 
 ## Dataset
+
 ```
 cd dataset/
 cp kaggle.json ~/.kaggle/kaggle.json
@@ -24,10 +30,12 @@ chmod 600 ~/.kaggle/kaggle.json
 
 ```
 
-
 ## Detox-Chain
+
 ### Preprocess
+
 Here we will create the span dataset for training Span-CNN.
+
 ```
 cd utils
 
@@ -40,8 +48,8 @@ python csv_to_json.py \
 sh perspective_api.sh
 ```
 
-
 ### Train Span-CNN
+
 ```
 cd ../span_cnn
 
@@ -59,7 +67,9 @@ python -u run_glue_no_trainer.py \
 ```
 
 ### Mask toxic span
+
 Note that the original RealToxicityPrompts dataset isn't divided into training and testing sets, we divide prompts.jsonl of RealToxicityPrompts dataset into rtp_train.json and rtp_test.json.
+
 ```
 cd utils
 
@@ -68,14 +78,17 @@ python mask_toxic_span.py \
 --output ../dataset/rtp_mask_span.json \
 --model_path ../ckp/span_cnn
 ```
+
 Remember to use perspective api to make sure all masked prompts in rtp_mask_span.json are non-toxic!
 
 ### Rephrase masked prompts
+
 ```
 python rephrase.py \
 --file ../dataset/rtp_mask_span.json \
 --save ../dataset/rtp_rephrase.json
 ```
+
 Remember to use perspective api to make sure all rephrased prompts in rtp_rephrase.json are non-toxic!
 
 ### Continual generation
@@ -94,9 +107,11 @@ python eval_sim.py \
 --file ../dataset/corresponding_model/rtp_continuation.json \
 --save ../dataset/corresponding_model/rtp_sim.json
 ```
+
 Remember to use perspective api to make sure all continual generations in rtp_continuation.json are non-toxic!
 
 ### Make Detox-Chain
+
 ```
 python ../utils/make_detox_chain.py \
 --input ../dataset/corresponding_model/rtp_sim.json \
@@ -104,26 +119,32 @@ python ../utils/make_detox_chain.py \
 ```
 
 ## LLMs self-detoxification
-This part is the training script for the models used in our paper with S-Adapter or LoRA. Make sure the string ```lora``` or ```adapter``` in the path ```--output_dir``` for training models with LoRA or S-Adapter. We conduct the experiment with 8 NVIDIA-A100(40GB).
+
+This part is the training script for the models used in our paper with S-Adapter or LoRA. Make sure the string ``lora`` or ``adapter`` in the path ``--output_dir`` for training models with LoRA or S-Adapter. We conduct the experiment with 8 NVIDIA-A100(40GB).
+
 * LlaMA & Alpaca
+
 ```
 cd llama
 sh ./train.sh
 ```
 
 * FLAN-T5 XL
+
 ```
 cd flan_t5_xl
 sh ./train.sh
 ```
 
 * GPT2 XL
+
 ```
 cd gpt_xl
 sh ./train.sh
 ```
 
 ## Evaluation
+
 ```
 #generate
 python ./utils/continuation_inference.py \
@@ -154,18 +175,21 @@ python ./utils/toxicity_analysis.py --file ./result/corresponding_model/test_was
 ```
 
 # Data Release
-We provide the download link for all the original data used in our paper:
-| Dataset | Samples | Download Link | 
-|---------|---------|---------|
-| <center>Real Toxicity Prompts</center> | <center>~100k</center> |<center>[download](https://github.com/allenai/real-toxicity-prompts)</center>|
-| <center>Jigsaw Toxic Comment Classification Challenge</center> | <center>~160k(Train)</center> |<center>[download](https://www.kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge/data)</center>|
-| <center>Writing Prompts</center> | <center>~300K</center> |<center>[download](https://www.kaggle.com/datasets/ratthachat/writing-prompts)</center>|
 
+We provide the download link for all the original data used in our paper:
+
+| Dataset                                                                | Samples                               | Download Link                                                                                                            |
+| ---------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `<center>`Real Toxicity Prompts`</center>`                         | `<center>`~100k`</center>`        | `<center>`[download](https://github.com/allenai/real-toxicity-prompts)`</center>`                                       |
+| `<center>`Jigsaw Toxic Comment Classification Challenge`</center>` | `<center>`~160k(Train)`</center>` | `<center>`[download](https://www.kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge/data)`</center>` |
+| `<center>`Writing Prompts`</center>`                               | `<center>`~300K`</center>`        | `<center>`[download](https://www.kaggle.com/datasets/ratthachat/writing-prompts)`</center>`                             |
 
 # Model Release
+
 Coming Soon
 
 # Citation
+
 ```
 @article{tang2023detoxify,
   title={Detoxify Language Model Step-by-Step},
