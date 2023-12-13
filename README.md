@@ -25,7 +25,7 @@ conda env create -f environment.yaml
 
 ```
 cd dataset/
-cp kaggle.json ~/.kaggle/kaggle.json
+cp kaggle_ky.json ~/.kaggle/kaggle.json
 chmod 600 ~/.kaggle/kaggle.json
 
 ```
@@ -178,11 +178,11 @@ python ./utils/toxicity_analysis.py --file ./result/corresponding_model/test_was
 
 We provide the download link for all the original data used in our paper:
 
-| Dataset                                                                | Samples                               | Download Link                                                                                                            |
-| ---------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `<center>`Real Toxicity Prompts`</center>`                         | `<center>`~100k`</center>`        | `<center>`[download](https://github.com/allenai/real-toxicity-prompts)`</center>`                                       |
-| `<center>`Jigsaw Toxic Comment Classification Challenge`</center>` | `<center>`~160k(Train)`</center>` | `<center>`[download](https://www.kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge/data)`</center>` |
-| `<center>`Writing Prompts`</center>`                               | `<center>`~300K`</center>`        | `<center>`[download](https://www.kaggle.com/datasets/ratthachat/writing-prompts)`</center>`                             |
+| Dataset                                                                 | Samples                               | Download Link                                                                                                             |
+| ----------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `<center>`Real Toxicity Prompts `</center>`                         | `<center>`~100k `</center>`       | `<center>`[download](https://github.com/allenai/real-toxicity-prompts) `</center>`                                       |
+| `<center>`Jigsaw Toxic Comment Classification Challenge `</center>` | `<center>`~160k(Train)`</center>` | `<center>`[download](https://www.kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge/data) `</center>` |
+| `<center>`Writing Prompts `</center>`                               | `<center>`~300K `</center>`       | `<center>`[download](https://www.kaggle.com/datasets/ratthachat/writing-prompts) `</center>`                             |
 
 # Model Release
 
