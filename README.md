@@ -1,6 +1,6 @@
-# Detox-CoT
+# CMD
 
-This is the official code for paper [&#34;Detoxify Language Model Step-by-Step&#34;](https://arxiv.org/abs/2308.08295)
+This is the official code for paper [&#34;CMD: a framework for Context-aware Model self-Detoxification&#34;](https://arxiv.org/abs/2308.08295)
 
 ## Overview
 
@@ -34,7 +34,7 @@ chmod 600 ~/.kaggle/kaggle.json
 
 ### Preprocess
 
-Here we will create the span dataset for training Span-CNN.
+Here we will create the span dataset for training Segment-CNN.
 
 ```
 cd utils
