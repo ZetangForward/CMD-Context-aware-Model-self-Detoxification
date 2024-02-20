@@ -16,14 +16,14 @@ parser.add_argument('--output', '-o', type=str, default='',
                     help='data path to output the jsonl')
 parser.add_argument('--api_key', '-k', type=str, default='',
                     )
-parser.add_argument('--api_rate', '-r', type=int, default='',
+parser.add_argument('--api_rate', '-r', type=int, default=2000,
                     )
-parser.add_argument('--process', '-p', type=int, default='',
+parser.add_argument('--process', '-p', type=int, default=200,
                     help='number of process')
 args = parser.parse_args()
 
 ALL_API_KEYS = [
-    args.api_key,  # 100
+    args.api_key, 
 ]
 API_RATES = [args.api_rate] #your api rate
 
@@ -86,15 +86,15 @@ def evaluate(lst, num, process_number):
     global thread_lst
     scorer = PerspectiveApiScorer(ALL_API_KEYS[thread_lst[process_number]])
     for i in tqdm(range(len(lst))):
-        if "generation" not in lst[i][0]:
-            continue
-        for j in range(len(lst[i])):
-            gen = lst[i][j]['generation']
+        generations = lst[i]['generation']
+        lst[i]['cont_toxicity'] = []
+        for j in range(len(generations)):
+            gen = generations[j]
             if len(gen) == 0:
                 continue
             else:
                 evaluate = scorer.get_scores(gen)
-                lst[i][j]['total_toxicity'] = evaluate['toxicity']
+                lst[i]['cont_toxicity'].append(evaluate['toxicity'])
         temp = json.dumps(lst[i])
         json_lst.append((num+i,temp))
                     

@@ -1,5 +1,7 @@
 import json
 from transformers import AutoTokenizer,AutoConfig
+import sys
+sys.path.append("/home/amax/zky/CMD/segment_cnn")
 from modeling_bert import BertForSpanClassification
 import torch
 from tqdm import tqdm
@@ -47,6 +49,7 @@ for i in tqdm(range(len(lst)),total=len(lst)):
         span_label = lst[i]["prompt_span_label"]
         assert len(span_label) == (len(text)-1)
         mask_token_id = tokenizer.encode('[MASK]')[1]
+
         for j in range(len(text)-1):
             if span_label[j] == 1:
                 text[j] = mask_token_id

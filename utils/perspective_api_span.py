@@ -23,7 +23,7 @@ parser.add_argument('--process', '-p', type=int, default='',
 args = parser.parse_args()
 
 ALL_API_KEYS = [
-    args.api_key,  # 100
+    args.api_key,  
 ]
 API_RATES = [args.api_rate] #your api rate
 

@@ -16,9 +16,9 @@ parser.add_argument("--model", type=str)
 parser.add_argument("--peft", type=str)
 parser.add_argument("--sys_path", type=str)
 parser.add_argument("--file", type=str)
-parser.add_argument("--bsz", type=int)
-parser.add_argument("--max_new_tokens", type=int)
-parser.add_argument("--gen_times", type=int)
+parser.add_argument("--bsz", type=int,default=8)
+parser.add_argument("--max_new_tokens", type=int,default=20)
+parser.add_argument("--gen_times", type=int,default=25)
 args = parser.parse_args()
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -103,14 +103,10 @@ def main(file_path):
     if 'llama' in args.model.lower() or 'alpaca' in args.model or 'vicuna' in args.model:
         model = LlamaForCausalLM.from_pretrained(LOCAL_MODEL_PATH,torch_dtype=torch.bfloat16,device_map='auto')
     if 'gpt' in args.model or 'sgeat' in args.model:
-        model = AutoModelForCausalLM.from_pretrained(LOCAL_MODEL_PATH,torch_dtype=torch.float16)
+        model = AutoModelForCausalLM.from_pretrained(LOCAL_MODEL_PATH,torch_dtype=torch.float16,device_map='auto')
     if 't5' in args.model:
-        model = T5ForConditionalGeneration.from_pretrained(LOCAL_MODEL_PATH,torch_dtype=torch.float16)
+        model = T5ForConditionalGeneration.from_pretrained(LOCAL_MODEL_PATH,torch_dtype=torch.float16,device_map='auto')
     if args.peft:
-        if 'adapter' in args.peft:
-            import sys
-            sys.path.append(args.sys_path)
-            from peft_model import PeftModel
         if 'lora' in args.peft:
             from peft import PeftModel
         model = PeftModel.from_pretrained(model, args.peft,torch_dtype=torch.float16,device_map='auto')
@@ -118,6 +114,7 @@ def main(file_path):
     # wrap the dataset with dataloader
     dataloader = DataLoader(dataset, batch_size=bsz, shuffle=False)
     
+
     model = model.eval()
     
     # open the written file
@@ -159,7 +156,7 @@ def main(file_path):
                 count = 0
                 for ii in range(bsz):
                     for jj in range(max_gen_times):
-                        current_res[ii]["generation"].append(generation_texts[count])
+                        current_res[ii]["generation"].append(generation_texts[count][len(prompt):])
                         count += 1
                     if len(current_res[ii]["generation"]) == 1:
                         current_res[ii]["generation"] = current_res[ii]["generation"][0]

@@ -19,12 +19,12 @@ f_w = open(args.save,'w')
 
 lst = f.readlines()
 
-tokenizer = AutoTokenizer.from_pretrained('beyond/genius-large')
-genius = pipeline("text2text-generation", model='beyond/genius-large', device=0)
+tokenizer = AutoTokenizer.from_pretrained('/nvme/hf_models/genius-large')
+genius = pipeline("text2text-generation", model='/nvme/hf_models/genius-large', device=0)
 
 for i in tqdm(range(len(lst)),total=len(lst)):
     lst[i] = json.loads(lst[i])
-    if lst[i]['prompt']['text'] > 0.5:
+    if lst[i]['prompt']['toxicity'] > 0.5:
         length = len(tokenizer.tokenize(lst[i]['mask_prompt']))
         mask_prompt = lst[i]['mask_prompt'].replace('<MASK>','<mask>')
         mask_num = mask_prompt.count('<mask>')

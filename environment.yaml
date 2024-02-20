@@ -94,7 +94,7 @@ dependencies:
       - pandas==2.0.3
       - pathtools==0.1.2
       - pathy==0.10.2
-      - peft==0.3.0
+      - peft==0.8.2
       - pillow==10.0.0
       - preshed==3.0.8
       - protobuf==4.23.3

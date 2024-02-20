@@ -4,16 +4,22 @@ This is the official code for paper [&#34;CMD: a framework for Context-aware Mod
 
 ## Overview
 
-<p align="center"><img src="./assets/detox_chain.png" alt="Logo"></p>
+<p align="center"><img src="./assets/detox-chain.png" alt="Logo"></p>
 
 ## Highlights
 
-* We decompose the detoxification process into ordered sub-steps to construct Detox-chain.
-* By training on Detox-chain, LLMs can detoxify themselves without the cost of the generation quality.
+* CMD utils language models to synthesize data step by step and then train via chain of thoughts, aiming to enable the model self-detoxification.
+* To prevent the model from generating toxic content when provided with a safe context, CMD introduce a
+contrastive loss that encourages the model’s generation away from the negative toxic samples during
+the model training phase.
+
+## Experiments
+<p align="center"><img src="./assets/main_experiment.png" alt="Logo"></p>
+<p align="center"><img src="./assets/other_models.png" alt="Logo"></p>
 
 # Quick Start
 
-We provide the code of Span-CNN and training on Detox-Chain to detoxify LLMs themselves.
+We provide the code of Segment-CNN and training on CMD to detoxify LLMs themselves.
 
 ## Environment
 
@@ -21,16 +27,8 @@ We provide the code of Span-CNN and training on Detox-Chain to detoxify LLMs the
 conda env create -f environment.yaml
 ```
 
-## Dataset
 
-```
-cd dataset/
-cp kaggle_ky.json ~/.kaggle/kaggle.json
-chmod 600 ~/.kaggle/kaggle.json
-
-```
-
-## Detox-Chain
+## CMD
 
 ### Preprocess
 
@@ -48,10 +46,10 @@ python csv_to_json.py \
 sh perspective_api.sh
 ```
 
-### Train Span-CNN
+### Train Segment-CNN
 
 ```
-cd ../span_cnn
+cd segment_cnn
 
 python -u run_glue_no_trainer.py \
   --model_name_or_path bert-base-uncased \
@@ -66,14 +64,14 @@ python -u run_glue_no_trainer.py \
   --pad_to_max_length 
 ```
 
-### Mask toxic span
+### Mask Toxic Span
 
 Note that the original RealToxicityPrompts dataset isn't divided into training and testing sets, we divide prompts.jsonl of RealToxicityPrompts dataset into rtp_train.json and rtp_test.json.
 
 ```
-cd utils
+cd segment_cnn
 
-python mask_toxic_span.py \
+python ../utils/mask_toxic_span.py \
 --input path/to/your/RealToxicityPrompts/rtp_train.json \
 --output ../dataset/rtp_mask_span.json \
 --model_path ../ckp/span_cnn
@@ -81,9 +79,11 @@ python mask_toxic_span.py \
 
 Remember to use perspective api to make sure all masked prompts in rtp_mask_span.json are non-toxic!
 
-### Rephrase masked prompts
+### Rephrase Masked Prompts
 
 ```
+cd utils
+
 python rephrase.py \
 --file ../dataset/rtp_mask_span.json \
 --save ../dataset/rtp_rephrase.json
@@ -91,110 +91,50 @@ python rephrase.py \
 
 Remember to use perspective api to make sure all rephrased prompts in rtp_rephrase.json are non-toxic!
 
-### Continual generation
+### Continual Generation
 
 ```
+cd utils
+
 python continuation_inference.py \
 --model path/to/your/corresponding_model \
---file ../dataset/rtp_rephrase.json
+--file ../dataset/rtp_rephrase.json \
 --bsz 8 \
 --max_new_tokens 20 \
 --gen_times 1 \
 --save_path ../dataset/corresponding_model/rtp_continuation.json
 
-#evaluate similarity between prompts and generations to judge whether to continue to generate
-python eval_sim.py \
+python perspective_api_dataset.py \
 --file ../dataset/corresponding_model/rtp_continuation.json \
---save ../dataset/corresponding_model/rtp_sim.json
+--output ../dataset/corresponding_model/rtp_continuation_api.json \
+--api_key <your_perspective_api_key> 
 ```
 
-Remember to use perspective api to make sure all continual generations in rtp_continuation.json are non-toxic!
 
-### Make Detox-Chain
+### Make Training Set
 
 ```
-python ../utils/make_detox_chain.py \
---input ../dataset/corresponding_model/rtp_sim.json \
---output ../dataset/corresponding_model/rtp_detox_chain.json
+python ../utils/make_train_set.py \
+--input ../dataset/corresponding_model/rtp_continuation_api.json \
+--output ../dataset/corresponding_model/rtp_cmd.json
 ```
 
 ## LLMs self-detoxification
 
-This part is the training script for the models used in our paper with S-Adapter or LoRA. Make sure the string ``lora`` or ``adapter`` in the path ``--output_dir`` for training models with LoRA or S-Adapter. We conduct the experiment with 8 NVIDIA-A100(40GB).
-
-* LlaMA & Alpaca
-
 ```
-cd llama
-sh ./train.sh
+cd ../train_cmd
+
+sh train.sh
 ```
 
-* FLAN-T5 XL
-
-```
-cd flan_t5_xl
-sh ./train.sh
-```
-
-* GPT2 XL
-
-```
-cd gpt_xl
-sh ./train.sh
-```
-
-## Evaluation
-
-```
-#generate
-python ./utils/continuation_inference.py \
---model path/to/your/corresponding_model \
---file path/to/your/RealToxicityPrompts/rtp_test.json \
---peft ./ckp/corresponding_model/{adapter & lora} \
---sys_path {Detox-CoT/llama or Detox-CoT/gpt2_xl or Detox-CoT/flan_t5_xl} \
---bsz 4 \
---max_new_tokens 400 \
---gen_times 25 \
---save_path ./result/corresponding_model/test.json
-
-#wash
-python ./utils/wash.py \
---file ./result/corresponding_model/test.json \
---save ./result/corresponding_model/test_wash.json
-
-#use perspective api to rate samples
-python ../utils/perspective_api_generation.py \
---file ./result/corresponding_model/test_wash.json \
---output ./result/corresponding_model/test_wash_api.json \
---api_key <your_api_key> \
---api_rate <your_api_rate> \
---process 100
-
-#show toxicity
-python ./utils/toxicity_analysis.py --file ./result/corresponding_model/test_wash_api.json
-```
 
 # Data Release
 
 We provide the download link for all the original data used in our paper:
 
-| Dataset                                                                 | Samples                               | Download Link                                                                                                             |
-| ----------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `<center>`Real Toxicity Prompts `</center>`                         | `<center>`~100k `</center>`       | `<center>`[download](https://github.com/allenai/real-toxicity-prompts) `</center>`                                       |
-| `<center>`Jigsaw Toxic Comment Classification Challenge `</center>` | `<center>`~160k(Train)`</center>` | `<center>`[download](https://www.kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge/data) `</center>` |
-| `<center>`Writing Prompts `</center>`                               | `<center>`~300K `</center>`       | `<center>`[download](https://www.kaggle.com/datasets/ratthachat/writing-prompts) `</center>`                             |
+| Dataset | Samples | Download Link | 
+|---------|---------|---------|
+| <center>Real Toxicity Prompts</center> | <center>~100k</center> |<center>[download](https://github.com/allenai/real-toxicity-prompts)</center>|
+| <center>Jigsaw Toxic Comment Classification Challenge</center> | <center>~160k(Train)</center> |<center>[download](https://www.kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge/data)</center>|
 
-# Model Release
 
-Coming Soon
-
-# Citation
-
-```
-@article{tang2023detoxify,
-  title={Detoxify Language Model Step-by-Step},
-  author={Tang, Zecheng and Zhou, Keyan and Wang, Pinzheng and Ding, Yuyang and Li, Juntao and others},
-  journal={arXiv preprint arXiv:2308.08295},
-  year={2023}
-}
-```

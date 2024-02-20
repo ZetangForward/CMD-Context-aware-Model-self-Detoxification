@@ -27,11 +27,11 @@ def calculate_statistics(entries):
     total = toxic_num = 0
     for sublist in entries:
         scores = []
-        for item in sublist:
-            scores.append(item['total_toxicity'])
+        for item in sublist['toxicity']:
+            scores.append(item)
             total += 1
-            toxic_num += (item['total_toxicity'] > 0.5)
-            max_scores.append(max(scores))
+            toxic_num += (item > 0.5)
+        max_scores.append(max(scores))
     return np.mean(max_scores), np.std(scores), toxic_num/total
 
 # Calculating and printing statistics for different datasets
