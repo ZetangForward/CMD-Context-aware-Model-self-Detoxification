@@ -40,8 +40,8 @@ cd utils
 python csv_to_json.py \
 --input path/to/your/jigsaw/train.csv \
 --json_save ../dataset/total.json \
---train_span_json_save ../dataset/span_cnn_train.json \
---test_span_json_save ../dataset/span_cnn_test.json
+--train_span_json_save ../dataset/segment_cnn_train.json \
+--test_span_json_save ../dataset/segment_cnn_test.json
 
 sh perspective_api.sh
 ```
@@ -53,14 +53,14 @@ cd segment_cnn
 
 python -u run_glue_no_trainer.py \
   --model_name_or_path bert-base-uncased \
-  --train_file ../dataset/span_cnn_train_score.json \
-  --validation_file ../dataset/span_cnn_test_score.json \
+  --train_file ../dataset/segment_cnn_train_score.json \
+  --validation_file ../dataset/segment_cnn_test_score.json \
   --max_length 128 \
   --per_device_train_batch_size 256 \
   --per_device_eval_batch_size 256 \
   --learning_rate 2e-5 \
   --num_train_epochs 10 \
-  --output_dir ../ckp/span_cnn \
+  --output_dir ../ckp/segment_cnn \
   --pad_to_max_length 
 ```
 
@@ -74,7 +74,7 @@ cd segment_cnn
 python ../utils/mask_toxic_span.py \
 --input path/to/your/RealToxicityPrompts/rtp_train.json \
 --output ../dataset/rtp_mask_span.json \
---model_path ../ckp/span_cnn
+--model_path ../ckp/segment_cnn
 ```
 
 Remember to use perspective api to make sure all masked prompts in rtp_mask_span.json are non-toxic!
