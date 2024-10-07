@@ -135,4 +135,15 @@ We provide the download link for all the original data used in our paper:
 | <center>Real Toxicity Prompts</center> | <center>~100k</center> |<center>[download](https://github.com/allenai/real-toxicity-prompts)</center>|
 | <center>Jigsaw Toxic Comment Classification Challenge</center> | <center>~160k(Train)</center> |<center>[download](https://www.kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge/data)</center>|
 
+# Citation
+
+```
+@article{tang2023detoxify,
+  title={Detoxify language model step-by-step},
+  author={Tang, Zecheng and Zhou, Keyan and Wang, Pinzheng and Ding, Yuyang and Li, Juntao and others},
+  journal={arXiv preprint arXiv:2308.08295},
+  year={2023}
+}
+```
+
 
