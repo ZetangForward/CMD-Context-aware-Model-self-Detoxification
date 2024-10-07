@@ -1,6 +1,4 @@
-# CMD
-
-This is the official code for paper [&#34;CMD: a framework for Context-aware Model self-Detoxification&#34;](https://arxiv.org/abs/2308.08295)
+## [CMD: a framework for Context-aware Model self-Detoxification (EMNLP2024 Main)](https://arxiv.org/abs/2308.08295)
 
 ## Overview
 
