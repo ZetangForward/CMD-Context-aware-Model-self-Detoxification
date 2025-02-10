@@ -1,5 +1,30 @@
 ## [CMD: a framework for Context-aware Model self-Detoxification (EMNLP2024 Main)](https://arxiv.org/abs/2308.08295)
 
+## News
+### 2025 / 2 /10
+
+We have released our Segment-CNN model on Hugging Face: [https://huggingface.co/ZetangForward/SegmentCNN](https://huggingface.co/ZetangForward/SegmentCNN) 
+You can directly use it for toxic detection / classification / annotation.
+
+Below is the usage:
+```python
+from transformers import pipeline
+
+# Initialize the Segment-CNN classification pipeline
+classifier = pipeline("spancnn-classification", model="ZetangForward/SegmentCNN", trust_remote_code=True)
+
+# Example 1: Positive (Safe) Text
+pos_text = "You look good today~!"
+result = classifier(pos_text)
+print(result)  # Output: 0 (0 represents safe content)
+
+# Example 2: Negative (Toxic) Text
+neg_text = "You're too stupid, you're just like a fool"
+result = classifier(neg_text)
+print(result)  # Output: 1 (1 represents toxic content)
+```
+
+
 ## Overview
 
 <p align="center"><img src="./assets/detox-chain.png" alt="Logo"></p>
